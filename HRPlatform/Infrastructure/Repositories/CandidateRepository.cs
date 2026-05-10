@@ -34,7 +34,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Candidate> GetByIdAsync(int id)
         {
-            return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Id == id);
+            return await _appDbContext.Candidates.Include(c => c.Skills).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Candidate?> GetCandidateByEmailAsync(string email)

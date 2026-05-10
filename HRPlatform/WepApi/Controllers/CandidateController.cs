@@ -72,8 +72,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost("searchCandidate")]
-        public async Task<IActionResult> SearchCandidate(string? candidateName, List<string?> skillNames)
+        [HttpGet("searchCandidate")]
+        public async Task<IActionResult> SearchCandidate([FromQuery] string? candidateName, [FromQuery] List<string?> skillNames)
         {
             try
             {
