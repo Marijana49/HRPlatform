@@ -1,1 +1,1 @@
-# praksa
+# HR Platform Project
