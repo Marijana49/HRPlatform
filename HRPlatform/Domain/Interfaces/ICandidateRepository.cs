@@ -8,5 +8,6 @@ namespace Domain.Interfaces
         Task UpdateCandidateSkilss(int canditateId, string skillName);
         Task RemoveCandidateSkillAsync(int canditateId, int skillId);
         Task<IEnumerable<Candidate>> SearchCandidateAsync(string name, List<string> skills);
+        Task<Candidate?> GetCandidateByEmailAsync(string email);
     }
 }

@@ -43,6 +43,11 @@ namespace Infrastructure.Repositories
             return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<Candidate?> GetCandidateByEmailAsync(string email)
+        {
+            return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Email.Equals(email));
+        }
+
         public Task RemoveCandidateSkillAsync(int canditateId, int skillId)
         {
             throw new NotImplementedException();

@@ -38,6 +38,19 @@ namespace Application.Services
             await _candidateRepository.AddAsync(newCandidate);
         }
 
+        public async Task RemoveCandidateAsync(CandidateForRemove candidate)
+        {
+            var candidateForRemove = await _candidateRepository.GetCandidateByEmailAsync(candidate.Email);
+
+            if(candidateForRemove == null)
+            {
+                throw new Exception("Candidate doesn't exist!");
+            }
+
+            await _candidateRepository.DeleteAsync(candidateForRemove);
+            
+        }
+
         public async Task RemoveCandidateSkillAsync(int candidateId, string skillName)
         {
             var skillForRemoving = await _skillRepository.GetSkillByName(skillName);
