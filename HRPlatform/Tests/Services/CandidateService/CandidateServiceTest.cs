@@ -66,5 +66,33 @@ namespace Tests.Services.CandidateService
             var exeption = Assert.ThrowsAsync<Exception>(async () => await _candidateService.CreateCandidateAsync(candidateDTO));
             Assert.That(exeption.Message, Is.EqualTo("Email already exists!"));
         }
+
+        [Test]
+        public async Task RemoveCandidate_Test()
+        {
+            var removeCandidate = new CandidateForRemove
+            {
+                Id = 1,
+            };
+
+            var exsistingCandidate = new Candidate { Id = 1 }; 
+            _candidateRepo.Setup(r => r.GetByIdAsync(removeCandidate.Id)).ReturnsAsync(exsistingCandidate);
+
+            await _candidateService.RemoveCandidateAsync(removeCandidate);
+            _candidateRepo.Verify(r => r.DeleteAsync(exsistingCandidate), Times.Once);
+        }
+
+        [Test]
+        public async Task RemoveCandidateExeption_Test()
+        {
+            var removeCandidate = new CandidateForRemove
+            {
+                Id = 1,
+            };
+
+            _candidateRepo.Setup(r => r.GetByIdAsync(removeCandidate.Id)).ReturnsAsync((Candidate)null);
+            var exeption = Assert.ThrowsAsync<Exception>(async () => await _candidateService.RemoveCandidateAsync(removeCandidate));
+            Assert.That(exeption.Message, Is.EqualTo("Candidate doesn't exist!"));
+        }
     }
 }
