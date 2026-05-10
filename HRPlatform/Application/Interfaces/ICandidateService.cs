@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Domain.Models;
 
 namespace Application.Interfaces
 {
@@ -8,5 +9,6 @@ namespace Application.Interfaces
         Task UpdateCandidateSkillAsync(int candidateId, string skillName);
         Task RemoveCandidateSkillAsync(int candidateId, string skillName);
         Task RemoveCandidateAsync(CandidateForRemove candidate);
+        Task<IEnumerable<CandidateDTO>> SearchCandidateAsync(string? name, List<string?> skillNames);
     }
 }

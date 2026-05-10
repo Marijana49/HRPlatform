@@ -2,6 +2,6 @@
 {
     public class CandidateForRemove
     {
-        public string Email { get; set; }
+        public int Id { get; set; }
     }
 }

@@ -18,29 +18,72 @@ namespace WebApi.Controllers
         [HttpPost("addCandidate")]
         public async Task<IActionResult> AddNewCandidate(CandidateDTO dto)
         {
-            await _candidateService.CreateCandidateAsync(dto);
-            return Ok(new { message = "New candidate succesfully added!" });
+            try
+            {
+                await _candidateService.CreateCandidateAsync(dto);
+                return Ok(new { message = "New candidate succesfully added!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPatch("updateSkill")]
         public async Task<IActionResult> UpdateCandidateSkill(int candidateId, string skillName)
         {
-            await _candidateService.UpdateCandidateSkillAsync(candidateId, skillName);
-            return Ok(new { message = "Skill updated!" });
+            try
+            {
+                await _candidateService.UpdateCandidateSkillAsync(candidateId, skillName);
+                return Ok(new { message = "Skill updated!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpPatch("removeSkill")]
         public async Task<IActionResult> RemoveCandidateSkill(int candidateId, string skillName)
         {
-            await _candidateService.RemoveCandidateSkillAsync(candidateId, skillName);
-            return Ok(new { message = "Skill removed!" });
+            try
+            {
+                await _candidateService.RemoveCandidateSkillAsync(candidateId, skillName);
+                return Ok(new { message = "Skill removed!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("deleteCandidate")]
         public async Task<IActionResult> DeleteCandidate(CandidateForRemove candidate)
         {
-            await _candidateService.RemoveCandidateAsync(candidate);
-            return Ok(new { message = $"Candidate with email {candidate.Email} removed!" });
+            try
+            {
+                await _candidateService.RemoveCandidateAsync(candidate);
+                return Ok(new { message = "Candidate removed!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("searchCandidate")]
+        public async Task<IActionResult> SearchCandidate(string? candidateName, List<string?> skillNames)
+        {
+            try
+            {
+                await _candidateService.SearchCandidateAsync(candidateName, skillNames);
+                return Ok(new { message = "Succesufully search!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

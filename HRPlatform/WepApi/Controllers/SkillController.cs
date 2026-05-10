@@ -1,6 +1,5 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -19,8 +18,15 @@ namespace WebApi.Controllers
         [HttpPost("addSkill")]
         public async Task<IActionResult> CreateNewSkill(SkillDTO skillDTO)
         {
-            await _skillService.CreateSkillAsync(skillDTO);
-            return Ok(new { message = $"Skill {skillDTO.Name} created!" });
+            try
+            {
+                await _skillService.CreateSkillAsync(skillDTO);
+                return Ok(new { message = $"Skill {skillDTO.Name} created!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

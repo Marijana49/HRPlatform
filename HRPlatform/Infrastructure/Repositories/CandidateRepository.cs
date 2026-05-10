@@ -2,6 +2,7 @@
 using Domain.Models;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Security.AccessControl;
 
 namespace Infrastructure.Repositories
@@ -19,11 +20,6 @@ namespace Infrastructure.Repositories
         {
             await _appDbContext.Candidates.AddAsync(entity);
             await _appDbContext.SaveChangesAsync();
-        }
-
-        public Task AddCandidateSkillAsync(int canditateId, int skillId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task DeleteAsync(Candidate entity)
@@ -48,14 +44,9 @@ namespace Infrastructure.Repositories
             return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Email.Equals(email));
         }
 
-        public Task RemoveCandidateSkillAsync(int canditateId, int skillId)
+        public async Task<IEnumerable<Candidate>> SearchCandidateAsync(string name)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Candidate>> SearchCandidateAsync(string name, List<string> skills)
-        {
-            throw new NotImplementedException();
+            return await _appDbContext.Candidates.Where(c => c.FullName.Contains(name)).ToListAsync();
         }
 
         public async Task UpdateAsync(Candidate entity)
@@ -63,27 +54,6 @@ namespace Infrastructure.Repositories
             _appDbContext.Update(entity);
             await Task.CompletedTask;
             await _appDbContext.SaveChangesAsync();
-        }
-
-        public async Task UpdateCandidateSkilss(int canditateId, string skillName)
-        {
-            var candidateSkill = await _appDbContext.Skills.FirstOrDefaultAsync(s => s.Name == skillName);
-            if (candidateSkill != null)
-            {
-                throw new Exception($"Skill {skillName} doesn't exist!");
-            }
-
-            var existing = await _appDbContext.CandidatesSkill.FirstOrDefaultAsync(cs => cs.CandidateId == canditateId && cs.SkillId == candidateSkill.Id);
-            if(existing == null)
-            {
-                var newSkill = new CandidateSkill
-                {
-                    CandidateId = canditateId,
-                    SkillId = candidateSkill.Id
-                };
-                _appDbContext.CandidatesSkill.Add(newSkill);
-                await _appDbContext.SaveChangesAsync();
-            }
-        }
+        }    
     }
 }

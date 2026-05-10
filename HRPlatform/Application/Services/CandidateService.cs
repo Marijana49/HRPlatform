@@ -26,6 +26,12 @@ namespace Application.Services
                 throw new Exception("Skills not found!");
             }
 
+            var existingMail = await _candidateRepository.GetCandidateByEmailAsync(candidateDTO.Email);
+            if(existingMail != null)
+            {
+                throw new Exception("Email already exists!");
+            }
+
             var newCandidate = new Candidate
             {
                 FullName = candidateDTO.FullName,
@@ -40,15 +46,14 @@ namespace Application.Services
 
         public async Task RemoveCandidateAsync(CandidateForRemove candidate)
         {
-            var candidateForRemove = await _candidateRepository.GetCandidateByEmailAsync(candidate.Email);
+            var candidateForRemove = await _candidateRepository.GetByIdAsync(candidate.Id);
 
             if(candidateForRemove == null)
             {
                 throw new Exception("Candidate doesn't exist!");
             }
 
-            await _candidateRepository.DeleteAsync(candidateForRemove);
-            
+            await _candidateRepository.DeleteAsync(candidateForRemove); 
         }
 
         public async Task RemoveCandidateSkillAsync(int candidateId, string skillName)
@@ -76,13 +81,35 @@ namespace Application.Services
             }
         }
 
+        public async Task<IEnumerable<CandidateDTO>> SearchCandidateAsync(string? name, List<string?> skillNames)
+        {
+            var candidates = await _candidateRepository.SearchCandidateAsync(name);
+            var skills = await _skillRepository.GetSkillsByName(skillNames);
+
+            var searchedCandidate = candidates.Select(c => new CandidateDTO
+            {
+                FullName = c.FullName,
+                BirthDate = c.BirthDate,
+                ContactNumber = c.ContactNumber,
+                Email = c.Email,
+                Skills = c.Skills.Select(s => s.Skill.Name).ToList()
+            });
+
+            if(!searchedCandidate.Any())
+            {
+                throw new Exception("Candidate not found!");
+            }
+
+            return searchedCandidate;
+        }
+
         public async Task UpdateCandidateSkillAsync(int candidateId, string skillName)
         {
             var newSkill = await _skillRepository.GetSkillByName(skillName);
 
             if (newSkill == null)
             {
-                throw new Exception($"Skill {newSkill} doesn't exist!");
+                throw new Exception($"Skill {skillName} doesn't exist!");
             }
 
             var candidate = await _candidateRepository.GetByIdAsync(candidateId);
@@ -90,6 +117,11 @@ namespace Application.Services
             if (candidate == null)
             {
                 throw new Exception("Candidate not found!");
+            }
+
+            if(candidate.Skills == null)
+            {
+                candidate.Skills = new List<CandidateSkill>();
             }
 
             bool alreadyHasSkill = candidate.Skills.Any(s => s.SkillId == newSkill.Id);
