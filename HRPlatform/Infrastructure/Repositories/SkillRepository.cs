@@ -17,12 +17,14 @@ namespace Infrastructure.Repositories
         public async Task AddAsync(Skill entity)
         {
             await _appDbContext.Skills.AddAsync(entity);
+            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Skill entity)
         {
             _appDbContext.Skills.Remove(entity);
             await Task.CompletedTask;
+            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Skill>> GetAllAsync()
@@ -35,10 +37,21 @@ namespace Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<Skill?> GetSkillByName(string skillName)
+        {
+            return await _appDbContext.Skills.Where(s => skillName == s.Name).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Skill>> GetSkillsByName(List<string> skillNames)
+        {
+            return await _appDbContext.Skills.Where(s => skillNames.Contains(s.Name)).ToListAsync();
+        }
+
         public async Task UpdateAsync(Skill entity)
         {
             _appDbContext.Skills.Update(entity);
             await Task.CompletedTask;
+            await _appDbContext.SaveChangesAsync();
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Infrastructure.Repositories
         public async Task AddAsync(Candidate entity)
         {
             await _appDbContext.Candidates.AddAsync(entity);
+            await _appDbContext.SaveChangesAsync();
         }
 
         public Task AddCandidateSkillAsync(int canditateId, int skillId)
@@ -28,6 +29,7 @@ namespace Infrastructure.Repositories
         {
             _appDbContext.Candidates.Remove(entity);
             await Task.CompletedTask;
+            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Candidate>> GetAllAsync()
@@ -54,6 +56,7 @@ namespace Infrastructure.Repositories
         {
             _appDbContext.Update(entity);
             await Task.CompletedTask;
+            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task UpdateCandidateSkilss(int canditateId, string skillName)
