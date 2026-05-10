@@ -19,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ServerVersion.AutoDetect(connectionString)));
 builder.Services.AddScoped<ICandidateService, CandidateService>();
 builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
+builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 
 var app = builder.Build();

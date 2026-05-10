@@ -2,6 +2,7 @@
 using Domain.Models;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Security.AccessControl;
 
 namespace Infrastructure.Repositories
 {
@@ -37,9 +38,9 @@ namespace Infrastructure.Repositories
             return await _appDbContext.Candidates.ToListAsync();
         }
 
-        public Task<Candidate> GetByIdAsync(int id)
+        public async Task<Candidate> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public Task RemoveCandidateSkillAsync(int canditateId, int skillId)

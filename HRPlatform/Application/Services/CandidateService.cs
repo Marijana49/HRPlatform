@@ -21,7 +21,7 @@ namespace Application.Services
             var candidateSkills = candidateDTO.Skills.Distinct().ToList();
             var selectedSkill = await _skillRepository.GetSkillsByName(candidateSkills);
 
-            if(!selectedSkill.Any()) 
+            if (!selectedSkill.Any())
             {
                 throw new Exception("Skills not found!");
             }
@@ -38,19 +38,50 @@ namespace Application.Services
             await _candidateRepository.AddAsync(newCandidate);
         }
 
+        public async Task RemoveCandidateSkillAsync(int candidateId, string skillName)
+        {
+            var skillForRemoving = await _skillRepository.GetSkillByName(skillName);
+
+            if (skillForRemoving == null)
+            {
+                throw new Exception($"Skill {skillName} doesn't exist!");
+            }
+
+            var candidate = await _candidateRepository.GetByIdAsync(candidateId);
+
+            if (candidate == null)
+            {
+                throw new Exception("Candidate not found!");
+            }
+
+            var hasSkill = candidate.Skills.FirstOrDefault(s => s.SkillId == skillForRemoving.Id);
+
+            if (hasSkill != null)
+            {
+                candidate.Skills.Remove(hasSkill);
+                await _candidateRepository.UpdateAsync(candidate);
+            }
+        }
+
         public async Task UpdateCandidateSkillAsync(int candidateId, string skillName)
         {
             var newSkill = await _skillRepository.GetSkillByName(skillName);
 
-            if(newSkill == null)
+            if (newSkill == null)
             {
                 throw new Exception($"Skill {newSkill} doesn't exist!");
             }
 
             var candidate = await _candidateRepository.GetByIdAsync(candidateId);
+
+            if (candidate == null)
+            {
+                throw new Exception("Candidate not found!");
+            }
+
             bool alreadyHasSkill = candidate.Skills.Any(s => s.SkillId == newSkill.Id);
 
-            if(!alreadyHasSkill)
+            if (!alreadyHasSkill)
             {
                 candidate.Skills.Add(new CandidateSkill
                 {

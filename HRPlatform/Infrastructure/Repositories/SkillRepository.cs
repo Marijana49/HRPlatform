@@ -32,9 +32,9 @@ namespace Infrastructure.Repositories
             return await _appDbContext.Skills.ToListAsync();
         }
 
-        public Task<Skill> GetByIdAsync(int id)
+        public async Task<Skill> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.Skills.FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<Skill?> GetSkillByName(string skillName)
