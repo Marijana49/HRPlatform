@@ -2,8 +2,6 @@
 using Domain.Models;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Security.AccessControl;
 
 namespace Infrastructure.Repositories
 {
@@ -44,9 +42,9 @@ namespace Infrastructure.Repositories
             return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Email.Equals(email));
         }
 
-        public async Task<IEnumerable<Candidate>> SearchCandidateAsync(string name)
+        public async Task<IEnumerable<Candidate>> SearchCandidateAsync(string? name, List<string> skills)
         {
-            return await _appDbContext.Candidates.Where(c => c.FullName.Contains(name)).ToListAsync();
+            return await _appDbContext.Candidates.Include(cs => cs.Skills).ThenInclude(cs => cs.Skill).Where(c => (string.IsNullOrEmpty(name) || c.FullName.Contains(name)) && (skills == null || !skills.Any()) || c.Skills.Any(cs => skills.Contains(cs.Skill.Name))).ToListAsync();
         }
 
         public async Task UpdateAsync(Candidate entity)
@@ -54,6 +52,6 @@ namespace Infrastructure.Repositories
             _appDbContext.Update(entity);
             await Task.CompletedTask;
             await _appDbContext.SaveChangesAsync();
-        }    
+        }
     }
 }

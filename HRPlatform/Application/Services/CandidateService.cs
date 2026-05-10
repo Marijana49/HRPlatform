@@ -27,7 +27,7 @@ namespace Application.Services
             }
 
             var existingMail = await _candidateRepository.GetCandidateByEmailAsync(candidateDTO.Email);
-            if(existingMail != null)
+            if (existingMail != null)
             {
                 throw new Exception("Email already exists!");
             }
@@ -48,12 +48,12 @@ namespace Application.Services
         {
             var candidateForRemove = await _candidateRepository.GetByIdAsync(candidate.Id);
 
-            if(candidateForRemove == null)
+            if (candidateForRemove == null)
             {
                 throw new Exception("Candidate doesn't exist!");
             }
 
-            await _candidateRepository.DeleteAsync(candidateForRemove); 
+            await _candidateRepository.DeleteAsync(candidateForRemove);
         }
 
         public async Task RemoveCandidateSkillAsync(int candidateId, string skillName)
@@ -83,8 +83,7 @@ namespace Application.Services
 
         public async Task<IEnumerable<CandidateDTO>> SearchCandidateAsync(string? name, List<string?> skillNames)
         {
-            var candidates = await _candidateRepository.SearchCandidateAsync(name);
-            var skills = await _skillRepository.GetSkillsByName(skillNames);
+            var candidates = await _candidateRepository.SearchCandidateAsync(name, skillNames);
 
             var searchedCandidate = candidates.Select(c => new CandidateDTO
             {
@@ -93,9 +92,9 @@ namespace Application.Services
                 ContactNumber = c.ContactNumber,
                 Email = c.Email,
                 Skills = c.Skills.Select(s => s.Skill.Name).ToList()
-            });
+            }).ToList();
 
-            if(!searchedCandidate.Any())
+            if (!searchedCandidate.Any())
             {
                 throw new Exception("Candidate not found!");
             }
@@ -119,7 +118,7 @@ namespace Application.Services
                 throw new Exception("Candidate not found!");
             }
 
-            if(candidate.Skills == null)
+            if (candidate.Skills == null)
             {
                 candidate.Skills = new List<CandidateSkill>();
             }

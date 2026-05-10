@@ -16,7 +16,7 @@ namespace Application.Services
 
         public async Task CreateSkillAsync(SkillDTO skillDTO)
         {
-            var existingSkill =  await _skillRepository.GetSkillByName(skillDTO.Name);
+            var existingSkill = await _skillRepository.GetSkillByName(skillDTO.Name);
 
             if (existingSkill != null)
             {
