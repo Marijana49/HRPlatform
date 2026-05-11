@@ -48,6 +48,11 @@ namespace Application.Services
         {
             var candidates = await _candidateRepository.GetAllAsync();
 
+            if (!candidates.Any())
+            {
+                throw new KeyNotFoundException("No candidates!");
+            }
+
             return candidates.Select(c => new CandidateDTO
             {
                 Id = c.Id,

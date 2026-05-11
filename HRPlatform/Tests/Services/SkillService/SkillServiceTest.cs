@@ -45,5 +45,28 @@ namespace Tests.Services.SkillService
             var exeption = Assert.ThrowsAsync<KeyNotFoundException>(async () => await _skillService.CreateSkillAsync(skillDto));
             Assert.That(exeption.Message, Is.EqualTo("Skill already exists!"));
         }
+
+        [Test]
+        public async Task GetAllSkills_Test()
+        {
+            var skills = new List<Skill>
+            {
+                new Skill { Name = "Skill1" },
+                new Skill { Name = "Skill2"}
+            };
+
+            _skillRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(skills);
+            await _skillService.GetAllAsync();
+        }
+
+        [Test]
+        public async Task GetNoSkills_Test()
+        {
+            var skills = new List<Skill>{};
+
+            _skillRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(skills);
+            var exeption = Assert.ThrowsAsync<KeyNotFoundException>(async () => await _skillService.GetAllAsync());
+            Assert.That(exeption.Message, Is.EqualTo("No skills!"));
+        }
     }
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
-import { GetAllCandidates, DeleteCandidate, UpdateCandidateSkill } from "../../services/candidate/CandidateService";
-
+import { useNavigate } from "react-router-dom"
+import { GetAllCandidates, DeleteCandidate, UpdateCandidateSkill, RemoveCandidateSkill } from "../../services/candidate/CandidateService";
+ 
 export function CandidateList(){
     const [candidates, setCandidates] = useState([]);
 
@@ -13,7 +14,7 @@ export function CandidateList(){
     }, []);
 
     const handleDelete = async (id) => {
-        if (window.confirm("Da li ste sigurni da želite da obrišete kandidata?")) {
+        if (window.confirm("Delete this candidate?")) {
             const success = await DeleteCandidate(id);
             if (success) {
                 setCandidates(candidates.filter(c => c.id !== id));
@@ -24,20 +25,36 @@ export function CandidateList(){
     };
 
     const handleUpdate = async (id) => {
-    const newSkill = window.prompt("Unesite naziv nove veštine:");
-    
-    if (newSkill && newSkill.trim() !== "") {
-        const success = await UpdateCandidateSkill(id, newSkill);
+        const newSkill = window.prompt("New skill:");
         
-        if (success) {
-            alert("Veština uspešno dodata!");
-            const updatedData = await GetAllCandidates();
-            setCandidates(updatedData || []);
-        } else {
-            alert("Greška: Veština možda ne postoji u bazi ili je kandidat već ima.");
+        if (newSkill && newSkill.trim() !== "") {
+            const success = await UpdateCandidateSkill(id, newSkill);
+            
+            if (success) {
+                alert("Veština uspešno dodata!");
+                const updatedData = await GetAllCandidates();
+                setCandidates(updatedData || []);
+            } else {
+                alert("Greška: Veština možda ne postoji u bazi ili je kandidat već ima.");
+            }
         }
-    }
-};
+    };
+
+    const handleRemove = async (id) => {
+        const deleteSkill = window.prompt("Skill for remove:");
+        
+        if (deleteSkill && deleteSkill.trim() !== "") {
+            const success = await RemoveCandidateSkill(id, deleteSkill);
+            
+            if (success) {
+                alert("Veština obrisana!");
+                const updatedData = await GetAllCandidates();
+                setCandidates(updatedData || []);
+            } else {
+                alert("error");
+            }
+        }
+    };
  
     return(
         <div>
@@ -66,6 +83,9 @@ export function CandidateList(){
                                 </td>
                                 <td>
                                     <button onClick={() => handleUpdate(candidate.id)}>Update skills</button>
+                                </td>
+                                <td>
+                                    <button onClick={() => handleRemove(candidate.id)}>Remove skills</button>
                                 </td>
                             </tr>
                         ))

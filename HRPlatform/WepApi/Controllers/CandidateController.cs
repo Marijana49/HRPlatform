@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("addCandidate")]
-        public async Task<IActionResult> AddNewCandidate(CandidateDTO dto)
+        public async Task<IActionResult> AddNewCandidate([FromBody]CandidateDTO dto)
         {
             try
             {

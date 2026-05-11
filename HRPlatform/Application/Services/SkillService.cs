@@ -30,5 +30,20 @@ namespace Application.Services
 
             await _skillRepository.AddAsync(newSkill);
         }
+
+        public async Task<IEnumerable<SkillDTO>> GetAllAsync()
+        {
+            var skills = await _skillRepository.GetAllAsync();
+
+            if(!skills.Any())
+            {
+                throw new KeyNotFoundException("No skills!");
+            }
+
+            return skills.Select(c => new SkillDTO
+            {
+                Name = c.Name,
+            }).ToList();
+        }
     }
 }

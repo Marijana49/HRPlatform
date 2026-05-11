@@ -38,3 +38,28 @@ export async function UpdateCandidateSkill(id, name){
         console.log(error);
     }
 }
+
+export async function RemoveCandidateSkill(id, name){
+    try{
+        const res = await fetch(`${API_URL}api/candidate/removeSkill?candidateId=${id}&skillName=${encodeURIComponent(name)}`, {
+            method: `PATCH`,
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return res.ok;
+    } catch(error){
+        console.log(error);
+    }
+}
+
+export async function AddNewCandidate(newCandidate){
+    try{
+        const res = await fetch(`${API_URL}api/candidate/addCandidate`, {
+            method: `POST`,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newCandidate)
+        });
+       return await res.json();
+    } catch (error){
+         console.log(error);
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -27,6 +28,13 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("skills")]
+        public async Task<IActionResult> GetAllCandidates()
+        {
+            var skills = await _skillService.GetAllAsync();
+            return Ok(skills);
         }
     }
 }
