@@ -2,7 +2,7 @@
 
 Technologies Used:
 
-Backend (.NET 8):
+**Backend (.NET 8):**
 
 Framework: ASP .NET Core Web API
 
@@ -12,7 +12,7 @@ Database: MySQL
 
 Testing: NUnit & Moq
 
-Frontend:
+**Frontend:**
 
 Library: React
 
