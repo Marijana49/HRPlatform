@@ -104,3 +104,21 @@ button[type="submit"] {
     font-size: 16px;
     font-weight: bold;
 }
+
+.search-container {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    gap: 10px;               
+    margin-bottom: 20px;
+    flex-wrap: wrap;       
+}
+
+.search-container input {
+    max-width: 200px;
+}
+
+.btn-reset {
+    background-color: #f4f4f4;
+    color: #333;
+}

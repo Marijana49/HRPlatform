@@ -34,6 +34,7 @@ export function AddCandidate(){
 
         if(res){
             console.log(res.message);
+            alert("New candidate added!");
         } else{
             console.log("Problem while adding candidate")
         }

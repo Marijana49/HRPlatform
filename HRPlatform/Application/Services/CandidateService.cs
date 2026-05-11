@@ -113,6 +113,7 @@ namespace Application.Services
 
             var searchedCandidate = candidates.Select(c => new CandidateDTO
             {
+                Id = c.Id,
                 FullName = c.FullName,
                 BirthDate = c.BirthDate,
                 ContactNumber = c.ContactNumber,

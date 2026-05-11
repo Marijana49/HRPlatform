@@ -63,3 +63,26 @@ export async function AddNewCandidate(newCandidate){
          console.log(error);
     }
 }
+
+export async function SearchCandidate(searchData){
+    try{
+        const parameters = new URLSearchParams();
+        if (searchData.name) parameters.append('name', searchData.name);
+        if (searchData.skills && searchData.skills.length > 0) {
+            searchData.skills.forEach(skill => parameters.append('skills', skill));
+        }
+
+        const res = await fetch(`${API_URL}api/candidate/searchCandidate?${parameters.toString()}`, {
+            method: `GET`,
+            headers: { 'Accept': 'application/json' }
+        });
+
+       if (!res.ok) return [];
+       const data = await res.json();
+       return Array.isArray(data) ? data : [];
+        return data || [];
+    } catch(error){
+        console.log(error);
+        return [];
+    }
+}

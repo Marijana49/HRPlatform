@@ -15,6 +15,7 @@ export function AddSkill(){
 
         if(res){
             console.log(res.message);
+            alert("New skill added!");
         } else{
             console.log("Problem while adding skill")
         }

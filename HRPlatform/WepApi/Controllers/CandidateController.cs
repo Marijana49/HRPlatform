@@ -80,12 +80,12 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("searchCandidate")]
-        public async Task<IActionResult> SearchCandidate([FromQuery] string? candidateName, [FromQuery] List<string?> skillNames)
+        public async Task<IActionResult> SearchCandidate([FromQuery(Name = "name")] string? candidateName, [FromQuery(Name = "skills")] List<string?> skillNames)
         {
             try
             {
-                await _candidateService.SearchCandidateAsync(candidateName, skillNames);
-                return Ok(new { message = "Succesufully search!" });
+                var res = await _candidateService.SearchCandidateAsync(candidateName, skillNames);
+                return Ok(res);
             }
             catch (Exception ex)
             {

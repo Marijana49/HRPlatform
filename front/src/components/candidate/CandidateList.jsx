@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { GetAllCandidates, DeleteCandidate, UpdateCandidateSkill, RemoveCandidateSkill } from "../../services/candidate/CandidateService";
+import { GetAllCandidates, DeleteCandidate, UpdateCandidateSkill, RemoveCandidateSkill, SearchCandidate } from "../../services/candidate/CandidateService";
  
 export function CandidateList(){
     const [candidates, setCandidates] = useState([]);
     const [searchName, setSearchName] = useState("");
+    const [searchSkills, setSearchSkills] = useState("");
+    
+    async function loadCandidates(){
+        const data = await GetAllCandidates();
+        setCandidates(data);
+    }
 
     useEffect(() => {
-        async function loadCandidates(){
-            const data = await GetAllCandidates();
-            setCandidates(data);
-        }
         loadCandidates();
     }, []);
 
@@ -32,11 +34,11 @@ export function CandidateList(){
             const success = await UpdateCandidateSkill(id, newSkill);
             
             if (success) {
-                alert("Veština uspešno dodata!");
+                alert("Skill added!");
                 const updatedData = await GetAllCandidates();
                 setCandidates(updatedData || []);
             } else {
-                alert("Greška: Veština možda ne postoji u bazi ili je kandidat već ima.");
+                alert("Error: Skill maybe doesn't exist in databese or candidate already has.");
             }
         }
     };
@@ -48,7 +50,7 @@ export function CandidateList(){
             const success = await RemoveCandidateSkill(id, deleteSkill);
             
             if (success) {
-                alert("Veština obrisana!");
+                alert("Skill removed!");
                 const updatedData = await GetAllCandidates();
                 setCandidates(updatedData || []);
             } else {
@@ -56,18 +58,43 @@ export function CandidateList(){
             }
         }
     };
+
+    const handleSearch = async () => {
+        const skillsArray = searchSkills 
+        ? searchSkills.split(',').map(s => s.trim()).filter(s => s !== "") 
+        : [];
+
+        const filteredData = await SearchCandidate({ name: searchName, skills: skillsArray });
+        setCandidates(filteredData || []);
+    }
+
+    const handleReset = async () => {
+        setSearchName("");
+        setSearchSkills("");
+        await loadCandidates();
+    };
  
     return(
         <div>
             <h3>Job Candidates</h3>
-            <input
+            <div className="search-container">
+                <input
+                    type="text"
+                    name="skill"
+                    placeholder="Search candidate name"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                />
+                <input
                 type="text"
                 name="name"
-                placeholder="Search candidate"
-                value={searchName}
-                onChange={(e) => setSearchName(e.target.value)}
+                placeholder="Search skill(s)"
+                value={searchSkills}
+                onChange={(e) => setSearchSkills(e.target.value)}
             />
-            <button>Search</button>
+            <button onClick={handleSearch}>Search</button>
+            <button onClick={handleReset}>Reset search</button>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -79,9 +106,9 @@ export function CandidateList(){
                     </tr>
                 </thead>
                 <tbody>
-                    {candidates.length > 0 ? (
-                        candidates.map((candidate) =>(
-                            <tr key={candidate.id}>
+                    {candidates.length > 0 && candidates? (
+                        candidates.map((candidate, index) =>(
+                            <tr key={candidate.id || index}>
                                 <td>{candidate.fullName}</td>
                                 <td>{new Date(candidate.birthDate).toLocaleDateString()}</td>
                                 <td>{candidate.contactNumber}</td>
