@@ -195,5 +195,31 @@ namespace Tests.Services.CandidateService
             var exeption = Assert.ThrowsAsync<KeyNotFoundException>(async () => await _candidateService.UpdateCandidateSkillAsync(candidate.Id, skill));
             Assert.That(exeption.Message, Is.EqualTo("Candidate not found!"));
         }
+
+        [Test]
+        public async Task SearchCandidate_Test()
+        {
+            var name = "Name";
+            var skills = new List<string> { "skill1", "skill2" };
+            var candidateList = new List<Candidate> { new Candidate { Id = 1, FullName = "Test" } };
+
+            _candidateRepo.Setup(r => r.SearchCandidateAsync(It.IsAny<string>(), It.IsAny<List<string>>())).ReturnsAsync(candidateList);
+
+            var res = await _candidateService.SearchCandidateAsync(name, skills);
+
+            Assert.NotNull(res);
+        }
+
+        [Test]
+        public async Task SearchCandidate_NotFoundTest()
+        {
+            var name = "Name";
+            var skills = new List<string> { "skill1", "skill2" };
+
+            _candidateRepo.Setup(r => r.SearchCandidateAsync(It.IsAny<string>(), It.IsAny<List<string>>())).ReturnsAsync(new List<Candidate>());
+
+            var exeption = Assert.ThrowsAsync<KeyNotFoundException>(async () => await _candidateService.SearchCandidateAsync(name, skills));
+            Assert.That(exeption.Message, Is.EqualTo("Candidate not found!"));
+        }
     }
 }
