@@ -68,6 +68,27 @@ namespace Tests.Services.CandidateService
         }
 
         [Test]
+        public async Task CreateCandidate_NoSkillsTest()
+        {
+            var birthDate = new DateOnly(1999, 12, 12);
+
+            var candidateDTO = new CandidateDTO
+            {
+                FullName = "Test",
+                BirthDate = birthDate,
+                ContactNumber = "123540",
+                Email = "testMail@gmail.com",
+                Skills = new List<string> { "C#", "English" }
+            };
+
+            _skillRepo.Setup(r => r.GetSkillsByName(It.IsAny<List<string>>())).ReturnsAsync(new List<Skill>());
+            _candidateRepo.Setup(r => r.GetCandidateByEmailAsync(candidateDTO.Email)).ReturnsAsync((Candidate)null);
+
+            var exeption = Assert.ThrowsAsync<KeyNotFoundException>(async () => await _candidateService.CreateCandidateAsync(candidateDTO));
+            Assert.That(exeption.Message, Is.EqualTo("Skills not found!"));
+        }
+
+        [Test]
         public async Task RemoveCandidate_Test()
         {
             var removeCandidate = new CandidateForRemove
