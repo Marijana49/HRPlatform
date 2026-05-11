@@ -42,7 +42,7 @@ namespace Tests.Services.SkillService
             var existingSkill = new Skill { Name = "Test" };
             _skillRepo.Setup(r => r.GetSkillByName(skillDto.Name)).ReturnsAsync(existingSkill);
 
-            var exeption = Assert.ThrowsAsync<Exception>(async () => await _skillService.CreateSkillAsync(skillDto));
+            var exeption = Assert.ThrowsAsync<KeyNotFoundException>(async () => await _skillService.CreateSkillAsync(skillDto));
             Assert.That(exeption.Message, Is.EqualTo("Skill already exists!"));
         }
     }

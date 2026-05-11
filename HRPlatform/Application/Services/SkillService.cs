@@ -20,7 +20,7 @@ namespace Application.Services
 
             if (existingSkill != null)
             {
-                throw new Exception("Skill already exists!");
+                throw new KeyNotFoundException("Skill already exists!");
             }
 
             var newSkill = new Skill
