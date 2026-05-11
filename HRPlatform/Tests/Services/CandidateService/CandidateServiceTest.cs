@@ -37,6 +37,7 @@ namespace Tests.Services.CandidateService
             _skillRepo.Setup(r => r.GetSkillsByName(It.IsAny<List<string>>())).ReturnsAsync(mockSkills);
 
             _candidateRepo.Setup(r => r.GetCandidateByEmailAsync(candidateDTO.Email)).ReturnsAsync((Candidate)null);
+            _candidateRepo.Setup(r => r.GetCandidateByEmailAsync(candidateDTO.ContactNumber)).ReturnsAsync((Candidate)null);
 
             await _candidateService.CreateCandidateAsync(candidateDTO);
 
@@ -62,9 +63,34 @@ namespace Tests.Services.CandidateService
 
             _skillRepo.Setup(r => r.GetSkillsByName(It.IsAny<List<string>>())).ReturnsAsync(mockSkills);
             _candidateRepo.Setup(r => r.GetCandidateByEmailAsync(candidateDTO.Email)).ReturnsAsync((exsistingCandidate));
+            _candidateRepo.Setup(r => r.GetCandidateByEmailAsync(candidateDTO.ContactNumber)).ReturnsAsync((exsistingCandidate));
 
-            var exeption = Assert.ThrowsAsync<KeyNotFoundException>(async () => await _candidateService.CreateCandidateAsync(candidateDTO));
+            var exeption = Assert.ThrowsAsync<InvalidOperationException>(async () => await _candidateService.CreateCandidateAsync(candidateDTO));
             Assert.That(exeption.Message, Is.EqualTo("Email already exists!"));
+        }
+
+        [Test]
+        public async Task ContactNumberExist_Test()
+        {
+            var birthDate = new DateOnly(1999, 12, 12);
+
+            var candidateDTO = new CandidateDTO
+            {
+                FullName = "Test",
+                BirthDate = birthDate,
+                ContactNumber = "123540",
+                Email = "testMail@gmail.com",
+                Skills = new List<string> { "C#", "English" }
+            };
+
+            var exsistingCandidate = new Candidate { ContactNumber = candidateDTO.ContactNumber };
+            var mockSkills = new List<Skill> { new Skill { Id = 1, Name = "C#" }, new Skill { Id = 2, Name = "English" } };
+
+            _skillRepo.Setup(r => r.GetSkillsByName(It.IsAny<List<string>>())).ReturnsAsync(mockSkills);
+            _candidateRepo.Setup(r => r.GetCandidateByPhoneAsync(candidateDTO.ContactNumber)).ReturnsAsync((exsistingCandidate));
+
+            var exeption = Assert.ThrowsAsync<InvalidOperationException>(async () => await _candidateService.CreateCandidateAsync(candidateDTO));
+            Assert.That(exeption.Message, Is.EqualTo("Contact number already exists!"));
         }
 
         [Test]

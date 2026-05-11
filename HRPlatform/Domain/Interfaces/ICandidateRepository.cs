@@ -6,5 +6,6 @@ namespace Domain.Interfaces
     {
         Task<IEnumerable<Candidate>> SearchCandidateAsync(string? name, List<string> skills);
         Task<Candidate?> GetCandidateByEmailAsync(string email);
+        Task<Candidate?> GetCandidateByPhoneAsync(string phone);
     }
 }

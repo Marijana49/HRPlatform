@@ -29,7 +29,13 @@ namespace Application.Services
             var existingMail = await _candidateRepository.GetCandidateByEmailAsync(candidateDTO.Email);
             if (existingMail != null)
             {
-                throw new KeyNotFoundException("Email already exists!");
+                throw new InvalidOperationException("Email already exists!");
+            }
+
+            var existingContactNumber = await _candidateRepository.GetCandidateByPhoneAsync(candidateDTO.ContactNumber);
+            if(existingContactNumber != null)
+            {
+                throw new InvalidOperationException("Contact number already exists!");
             }
 
             var newCandidate = new Candidate

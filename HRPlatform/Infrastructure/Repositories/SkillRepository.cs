@@ -23,7 +23,6 @@ namespace Infrastructure.Repositories
         public async Task DeleteAsync(Skill entity)
         {
             _appDbContext.Skills.Remove(entity);
-            await Task.CompletedTask;
             await _appDbContext.SaveChangesAsync();
         }
 
@@ -39,18 +38,18 @@ namespace Infrastructure.Repositories
 
         public async Task<Skill?> GetSkillByName(string skillName)
         {
-            return await _appDbContext.Skills.Where(s => skillName == s.Name).FirstOrDefaultAsync();
+            return await _appDbContext.Skills.Where(s => skillName.ToLower() == s.Name.ToLower()).FirstOrDefaultAsync();
         }
 
         public async Task<List<Skill>> GetSkillsByName(List<string> skillNames)
         {
-            return await _appDbContext.Skills.Where(s => skillNames.Contains(s.Name)).ToListAsync();
+            var lowerNames = skillNames.Select(n => n.ToLower()).ToList();
+            return await _appDbContext.Skills.Where(s => lowerNames.Contains(s.Name.ToLower())).ToListAsync();
         }
 
         public async Task UpdateAsync(Skill entity)
         {
             _appDbContext.Skills.Update(entity);
-            await Task.CompletedTask;
             await _appDbContext.SaveChangesAsync();
         }
     }

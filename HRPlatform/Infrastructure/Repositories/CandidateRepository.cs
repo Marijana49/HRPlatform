@@ -42,9 +42,31 @@ namespace Infrastructure.Repositories
             return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Email.Equals(email));
         }
 
+        public async Task<Candidate?> GetCandidateByPhoneAsync(string phone)
+        {
+            return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Email.Equals(phone));
+        }
+
         public async Task<IEnumerable<Candidate>> SearchCandidateAsync(string? name, List<string> skills)
         {
-            return await _appDbContext.Candidates.Include(cs => cs.Skills).ThenInclude(cs => cs.Skill).Where(c => (string.IsNullOrEmpty(name) || c.FullName.Contains(name)) && (skills == null || !skills.Any()) || c.Skills.Any(cs => skills.Contains(cs.Skill.Name))).ToListAsync();
+            var query = _appDbContext.Candidates.Include(c => c.Skills).ThenInclude(cs => cs.Skill).AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(c => c.FullName.ToLower().Contains(name.ToLower()));
+            }
+
+            if(skills != null && skills.Any())
+            {
+                var okSkills = skills.Where(s => !string.IsNullOrEmpty(s)).Select(s => s!.ToLower()).ToList();
+
+                if (okSkills.Any())
+                {
+                    query = query.Where(c => c.Skills.Any(cs => okSkills.Contains(cs.Skill.Name.ToLower())));
+                }
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task UpdateAsync(Candidate entity)

@@ -4,6 +4,7 @@ import { GetAllCandidates, DeleteCandidate, UpdateCandidateSkill, RemoveCandidat
  
 export function CandidateList(){
     const [candidates, setCandidates] = useState([]);
+    const [searchName, setSearchName] = useState("");
 
     useEffect(() => {
         async function loadCandidates(){
@@ -59,6 +60,14 @@ export function CandidateList(){
     return(
         <div>
             <h3>Job Candidates</h3>
+            <input
+                type="text"
+                name="name"
+                placeholder="Search candidate"
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+            />
+            <button>Search</button>
             <table>
                 <thead>
                     <tr>
@@ -82,10 +91,10 @@ export function CandidateList(){
                                     <button onClick={() => handleDelete(candidate.id)}>Delete</button>
                                 </td>
                                 <td>
-                                    <button onClick={() => handleUpdate(candidate.id)}>Update skills</button>
+                                    <button onClick={() => handleUpdate(candidate.id)}>Update skill</button>
                                 </td>
                                 <td>
-                                    <button onClick={() => handleRemove(candidate.id)}>Remove skills</button>
+                                    <button onClick={() => handleRemove(candidate.id)}>Remove skill</button>
                                 </td>
                             </tr>
                         ))
