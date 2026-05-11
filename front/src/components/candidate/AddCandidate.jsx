@@ -11,6 +11,14 @@ export function AddCandidate(){
         Skills: ""
     });
 
+    const initialState = {
+        FullName: "",
+        BirthDate: "",
+        ContactNumber: "",
+        Email: "",
+        Skills: ""
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -35,6 +43,7 @@ export function AddCandidate(){
         if(res){
             console.log(res.message);
             alert("New candidate added!");
+            setFormData(initialState);
         } else{
             console.log("Problem while adding candidate")
         }
