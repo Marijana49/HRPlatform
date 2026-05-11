@@ -44,6 +44,21 @@ namespace Application.Services
             await _candidateRepository.AddAsync(newCandidate);
         }
 
+        public async Task<IEnumerable<CandidateDTO>> GetAllCandidatesAsync()
+        {
+            var candidates = await _candidateRepository.GetAllAsync();
+
+            return candidates.Select(c => new CandidateDTO
+            {
+                Id = c.Id,
+                FullName = c.FullName,
+                BirthDate = c.BirthDate,
+                ContactNumber = c.ContactNumber,
+                Email = c.Email,
+                Skills = c.Skills.Select(s => s.Skill.Name).ToList()
+            }).ToList();
+        }
+
         public async Task RemoveCandidateAsync(CandidateForRemove candidate)
         {
             var candidateForRemove = await _candidateRepository.GetByIdAsync(candidate.Id);

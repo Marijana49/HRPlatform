@@ -15,6 +15,13 @@ namespace WebApi.Controllers
             _candidateService = candidateService;
         }
 
+        [HttpGet("candidates")]
+        public async Task<IActionResult> GetAllCandidates()
+        {
+            var candidates = await _candidateService.GetAllCandidatesAsync();
+            return Ok(candidates);
+        }
+
         [HttpPost("addCandidate")]
         public async Task<IActionResult> AddNewCandidate(CandidateDTO dto)
         {
@@ -59,7 +66,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("deleteCandidate")]
-        public async Task<IActionResult> DeleteCandidate(CandidateForRemove candidate)
+        public async Task<IActionResult> DeleteCandidate([FromBody]CandidateForRemove candidate)
         {
             try
             {

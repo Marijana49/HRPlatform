@@ -9,5 +9,6 @@ namespace Application.Interfaces
         Task RemoveCandidateSkillAsync(int candidateId, string skillName);
         Task RemoveCandidateAsync(CandidateForRemove candidate);
         Task<IEnumerable<CandidateDTO>> SearchCandidateAsync(string? name, List<string?> skillNames);
+        Task<IEnumerable<CandidateDTO>>  GetAllCandidatesAsync();
     }
 }

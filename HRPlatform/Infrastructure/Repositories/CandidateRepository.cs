@@ -29,7 +29,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Candidate>> GetAllAsync()
         {
-            return await _appDbContext.Candidates.ToListAsync();
+            return await _appDbContext.Candidates.Include(c => c.Skills).ThenInclude(cs => cs.Skill).ToListAsync();
         }
 
         public async Task<Candidate> GetByIdAsync(int id)

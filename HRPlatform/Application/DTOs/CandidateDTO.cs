@@ -2,6 +2,7 @@
 {
     public class CandidateDTO
     {
+        public int Id { get; set; }
         public string FullName { get; set; }
         public DateOnly BirthDate { get; set; }
         public string ContactNumber { get; set; }
