@@ -23,6 +23,7 @@ namespace Infrastructure.Data
                 entity.Property(c => c.ContactNumber).IsRequired();
                 entity.Property(e => e.Email).IsRequired();
                 entity.HasIndex(c => c.Email).IsUnique();
+                entity.HasIndex(c => c.ContactNumber).IsUnique();
 
                 entity.HasMany(c => c.Skills).WithOne(cs => cs.Candidate).HasForeignKey(cs => cs.CandidateId).OnDelete(DeleteBehavior.Cascade);
             });
