@@ -39,7 +39,12 @@ namespace Infrastructure.Repositories
 
         public async Task<Candidate?> GetCandidateByEmailAsync(string email)
         {
-            return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Email.Equals(email));
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return null;
+            }
+
+            return await _appDbContext.Candidates.FirstOrDefaultAsync(c => c.Email.Equals(email.ToLower()));
         }
 
         public async Task<Candidate?> GetCandidateByPhoneAsync(string phone)
@@ -60,9 +65,9 @@ namespace Infrastructure.Repositories
             {
                 var okSkills = skills.Where(s => !string.IsNullOrEmpty(s)).Select(s => s!.ToLower()).ToList();
 
-                if (okSkills.Any())
+                foreach (var s in okSkills)
                 {
-                    query = query.Where(c => c.Skills.Any(cs => okSkills.Contains(cs.Skill.Name.ToLower())));
+                    query = query.Where(c => c.Skills.Any(cs => cs.Skill.Name.ToLower() == s));
                 }
             }
 

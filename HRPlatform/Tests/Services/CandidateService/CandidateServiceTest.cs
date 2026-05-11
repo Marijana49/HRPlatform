@@ -37,7 +37,7 @@ namespace Tests.Services.CandidateService
             _skillRepo.Setup(r => r.GetSkillsByName(It.IsAny<List<string>>())).ReturnsAsync(mockSkills);
 
             _candidateRepo.Setup(r => r.GetCandidateByEmailAsync(candidateDTO.Email)).ReturnsAsync((Candidate)null);
-            _candidateRepo.Setup(r => r.GetCandidateByEmailAsync(candidateDTO.ContactNumber)).ReturnsAsync((Candidate)null);
+            _candidateRepo.Setup(r => r.GetCandidateByPhoneAsync(candidateDTO.ContactNumber)).ReturnsAsync((Candidate)null);
 
             await _candidateService.CreateCandidateAsync(candidateDTO);
 
@@ -58,12 +58,11 @@ namespace Tests.Services.CandidateService
                 Skills = new List<string> { "C#", "English" }
             };
 
-            var exsistingCandidate = new Candidate { Email = candidateDTO.Email };
+            var exsistingCandidate = new Candidate { Email = "TESTMAIL@GMAIL.COM" };
             var mockSkills = new List<Skill> { new Skill { Id = 1, Name = "C#" }, new Skill { Id = 2, Name = "English" } };
 
             _skillRepo.Setup(r => r.GetSkillsByName(It.IsAny<List<string>>())).ReturnsAsync(mockSkills);
             _candidateRepo.Setup(r => r.GetCandidateByEmailAsync(candidateDTO.Email)).ReturnsAsync((exsistingCandidate));
-            _candidateRepo.Setup(r => r.GetCandidateByEmailAsync(candidateDTO.ContactNumber)).ReturnsAsync((exsistingCandidate));
 
             var exeption = Assert.ThrowsAsync<InvalidOperationException>(async () => await _candidateService.CreateCandidateAsync(candidateDTO));
             Assert.That(exeption.Message, Is.EqualTo("Email already exists!"));
@@ -269,6 +268,31 @@ namespace Tests.Services.CandidateService
             _candidateRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(candidates);
             var exeption = Assert.ThrowsAsync<KeyNotFoundException>(async () => await _candidateService.GetAllCandidatesAsync());
             Assert.That(exeption.Message, Is.EqualTo("No candidates!"));
+        }
+
+        [Test]
+        public async Task SearchCandidate_ShouldReturnEmpty_WhenNameMatchesButSkillDoesNot()
+        {
+            var searchName = "Test";
+            var searchSkills = new List<string> { "Java" };
+
+            var candidateList = new List<Candidate>
+            {
+                new Candidate
+                {
+                    Id = 1,
+                    FullName = "Test Test",
+                    Skills = new List<CandidateSkill>
+                    {
+                        new CandidateSkill { Skill = new Skill { Name = "C#" } }
+                    }
+                }
+            };
+
+            _candidateRepo.Setup(r => r.SearchCandidateAsync(searchName, searchSkills)).ReturnsAsync(new List<Candidate>());
+
+            var exception = Assert.ThrowsAsync<KeyNotFoundException>(async () => await _candidateService.SearchCandidateAsync(searchName, searchSkills));
+            Assert.That(exception.Message, Is.EqualTo("Candidate not found!"));
         }
     }
 }
