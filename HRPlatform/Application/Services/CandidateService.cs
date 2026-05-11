@@ -23,13 +23,13 @@ namespace Application.Services
 
             if (!selectedSkill.Any())
             {
-                throw new Exception("Skills not found!");
+                throw new KeyNotFoundException("Skills not found!");
             }
 
             var existingMail = await _candidateRepository.GetCandidateByEmailAsync(candidateDTO.Email);
             if (existingMail != null)
             {
-                throw new Exception("Email already exists!");
+                throw new KeyNotFoundException("Email already exists!");
             }
 
             var newCandidate = new Candidate
@@ -50,7 +50,7 @@ namespace Application.Services
 
             if (candidateForRemove == null)
             {
-                throw new Exception("Candidate doesn't exist!");
+                throw new KeyNotFoundException("Candidate doesn't exist!");
             }
 
             await _candidateRepository.DeleteAsync(candidateForRemove);
@@ -62,14 +62,14 @@ namespace Application.Services
 
             if (skillForRemoving == null)
             {
-                throw new Exception($"Skill {skillName} doesn't exist!");
+                throw new KeyNotFoundException($"Skill {skillName} doesn't exist!");
             }
 
             var candidate = await _candidateRepository.GetByIdAsync(candidateId);
 
             if (candidate == null)
             {
-                throw new Exception("Candidate not found!");
+                throw new KeyNotFoundException("Candidate not found!");
             }
 
             var hasSkill = candidate.Skills.FirstOrDefault(s => s.SkillId == skillForRemoving.Id);
@@ -96,7 +96,7 @@ namespace Application.Services
 
             if (!searchedCandidate.Any())
             {
-                throw new Exception("Candidate not found!");
+                throw new KeyNotFoundException("Candidate not found!");
             }
 
             return searchedCandidate;
@@ -108,14 +108,14 @@ namespace Application.Services
 
             if (newSkill == null)
             {
-                throw new Exception($"Skill {skillName} doesn't exist!");
+                throw new KeyNotFoundException($"Skill {skillName} doesn't exist!");
             }
 
             var candidate = await _candidateRepository.GetByIdAsync(candidateId);
 
             if (candidate == null)
             {
-                throw new Exception("Candidate not found!");
+                throw new KeyNotFoundException("Candidate not found!");
             }
 
             if (candidate.Skills == null)
